@@ -11,7 +11,6 @@ This project transforms regular images into cartoon-style artwork using **OpenCV
 - [🛠 Technologies Used](#technologies-used)
 - [✨ Features](#features)
 - [🚀 Room for Improvement](#room-for-improvement)
-- [📥 Installation or Contribution Guidelines](https://github.com/Shweta2024/Cartoonify-Image-Using-OpenCV/blob/main/Installation%20or%20Contribution%20Guidelines.md)
 - [📬 Contact](#contact)
 
 ---
