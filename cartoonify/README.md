@@ -26,7 +26,7 @@ To take a user-selected image and apply **cartoon-like effects** to it by combin
 
 ---
 
-## 💡 Why This Project?
+##  Why This Project?
 
 Inspired by popular photo filter apps like those on Instagram, this project demonstrates how cartoon effects can be created **without heavy tools** – just by using Python and OpenCV.
 
@@ -34,7 +34,7 @@ It also shows how **machine learning (K-Means)** and **image segmentation** can 
 
 ---
 
-## 🔍 Project Overview
+## Project Overview
 
 This is what happens in the project step by step:
 
@@ -55,7 +55,7 @@ This is what happens in the project step by step:
 
 ---
 
-## 🛠 Technologies Used
+## Technologies Used
 
 - **Python** – Programming language
 - **OpenCV** – For image processing (reading, converting, blurring, etc.)
@@ -65,7 +65,7 @@ This is what happens in the project step by step:
 
 ---
 
-## ✨ Features
+## Features
 
 - 📂 **Load Image** – Load an image of your choice
 - 🎨 **Cartoonify** – Apply edge detection,clustering, and smoothing
@@ -73,7 +73,7 @@ This is what happens in the project step by step:
 
 ---
 
-## 🚀 Room for Improvement
+## Room for Improvement
 
 - Currently supports processing one image at a time.  
   Could be extended to handle **multiple images in batch** mode.
@@ -81,7 +81,7 @@ This is what happens in the project step by step:
 
 ---
 
-## 📬 Contact
+## Contact
 
 😄 Created by – [Umair Khalil](https://www.linkedin.com/in/umair-khalil18/)
 
