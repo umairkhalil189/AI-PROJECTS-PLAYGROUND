@@ -15,7 +15,7 @@ This project transforms regular images into cartoon-style artwork using **OpenCV
 
 ---
 
-## 🎯 Objective
+## Objective
 
 To take a user-selected image and apply **cartoon-like effects** to it by combining:
 - **Color simplification** using K-Means clustering,
