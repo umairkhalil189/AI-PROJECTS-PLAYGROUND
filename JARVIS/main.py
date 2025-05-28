@@ -120,10 +120,10 @@ def main_process():
             request = request.replace("search google", "")
             webbrowser.open("https://www.google.com/search?q=" + request)
         elif "send whatsapp" in request:
-               pwk.sendwhatmsg("+010001000010", "anything :(  !!! ): Hahahaha", 20, 12, 30)
+               pwk.sendwhatmsg("+010001000010", "anything :(  !!! ): abcc", 20, 12, 30)
               # time.sleep(5)
        # elif "send email" in request:
-        #       pwk.send_mail("abc@gmail.com", "anything :(  !!! ): Hahahaha", 20, 12, 30)
+        #       pwk.send_mail("abc@gmail.com", "anything :(  !!! ): abccc", 20, 12, 30)
   
   
 main_process()
