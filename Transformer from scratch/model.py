@@ -162,4 +162,26 @@ class DecodeBlock(nn.Module):
          return x
       
 class Decoder(nn.Module):
-   
+   def __init__(self, layers: nn.ModuleList) -> None:
+      super().__init__()
+      self.layers= layers
+      self.norm = LayerNormalization
+
+   def forward(self, x, encoder_output, src_mask, tgt_mask):
+      for layer in self.layers:
+         x= layer(x, encoder_output, src_mask, tgt_mask)
+      return self.norm(x)
+
+class ProjectionLayer(nn.Module):
+    def __init__(self, d_model:int, vocab_size: int) -> None:
+       super().__init__()
+       self.proj= nn.Linear(d_model, vocab_size)
+
+       def forward(self,x):
+          #Batch, Seq_Len, d_model --> Bathc, Seq_Len, Vocab_Size
+          return torch.log_softmax(self.proj(x), dim = -1)
+       
+class Transfomer(nn.Module):
+   def __init__(self, encoder: Encoder , decoder: Decoder, src_embed: InputEmbeddings, tgt_embed: InputEmbeddings, tgt_pos: PositionalEncoding, projection_layer: ProjectionLayer ) -> None:
+      super().__init()
+
