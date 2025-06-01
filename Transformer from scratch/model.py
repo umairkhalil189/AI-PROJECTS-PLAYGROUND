@@ -196,5 +196,17 @@ class Transfomer(nn.Module):
       src= self.src_embed(src)
       src= self.src_pos(src)
       return self.encoder(src, src_mask)
+   
+   def decode(self, tgt, tgt_mask):
+      tgt= self.tgt_embed(tgt)
+      tgt = self.tgt_pos(tgt)
+      return self.decoder(tgt, encoder_output, src_mask ,tgt_mask)
+
+   def project(self, x):
+      return self.projection_layer(x)
+   
+   def build_transformer(src_vocab_size: int, tgt_vocab_size: int, src_seq_len: int, tgt_seq_len: int, d_model: int=512, N: int=6, h:int=8, dropout: float= 0.1, d_ff= 2048 ) -> Transformer:
+      src_embed= InputEmbeddings(d_model, src_vocab_size)
+      
 
 
