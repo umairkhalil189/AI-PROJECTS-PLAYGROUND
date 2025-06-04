@@ -181,7 +181,7 @@ class ProjectionLayer(nn.Module):
           #Batch, Seq_Len, d_model --> Bathc, Seq_Len, Vocab_Size
           return torch.log_softmax(self.proj(x), dim = -1)
        
-class Transfomer(nn.Module):
+class Transformer(nn.Module):
    def __init__(self, encoder: Encoder , decoder: Decoder, src_embed: InputEmbeddings, tgt_embed: InputEmbeddings, src_pos: PositionalEncoding, tgt_pos: PositionalEncoding, projection_layer: ProjectionLayer ) -> None:
       super().__init()
       self.encoder = encoder
@@ -240,15 +240,15 @@ class Transfomer(nn.Module):
 
       #Create a Transformer
 
-      Transfomer = Transfomer(encoder, decoder, src_embed, tgt_embed, src_pos, tgt_pos, Projection_layer)
+      Transformer = Transformer(encoder, decoder, src_embed, tgt_embed, src_pos, tgt_pos, Projection_layer)
 
       #Initialize the parameters
 
-      for p in transfomer.parameter():
+      for p in transformer.parameter():
          if p.dim() > 1:
             nn.init.xaivier_uniform(p)
       
-      return transfomer
+      return transformer
    
 
 

@@ -62,9 +62,9 @@ class BilingualDataset(Dataset):
 
         assert encoder_input.size(0) == self.seq_len
         assert decoder_input.size(0) == self.seq_len
-        assert label.size(0)= self.seq_len
+        assert label.size(0)== self.seq_len
 
-        return(
+        return{
             "encoder_input": encoder_input, #Seq_Len
             "decoder_input": decoder_input, #Seq_Len
             "encoder_mask": (encoder_input != self.pad_token).unsqueeze(0).int(),     #(1, 1, Seq_len)
@@ -72,7 +72,7 @@ class BilingualDataset(Dataset):
             "label": label, #(Seq_Len),
             "src_text" : src_test,
             "tgt_text" : tgt_text
-        )
+        }
     def causal_mask():
         mask= torch.triu(torch.ones(1,size, size), diagonal =1).type(torch.int)
         return mask == 0 
