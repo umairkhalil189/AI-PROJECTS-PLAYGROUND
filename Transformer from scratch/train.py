@@ -11,8 +11,8 @@ from config import get_weights_file_path, get_config
 from datasets import load_dataset
 from tokenizers import Tokenizer
 from tokenizers.models import WordLevel
-from tokenizers.models import WordLevelTrainer
-from tokenizer.pre_tokenizers import Whitespace
+from tokenizers.trainers import WordLevelTrainer
+from tokenizers.pre_tokenizers import Whitespace
 
 from torch.utils.tensorboard import SummaryWriter
 import warnings
@@ -23,16 +23,16 @@ from pathlib import Path
 
 def get_all_sentences(ds, lang):
     for item in ds:
-        yield[item]
+        yield item['translation'][lang]
 
 
 def get_or_build_tokenizer(config, ds, lang):
     #Config['tokenizer.file'] = ../tokenizers/tokenizer_{0}.json
     tokenizer_path = Path(config['tokenizer.file'].format(lang))
     if not Path.exists(tokenizer_path):
-        tokenizer = Tokenizer(WordLevel( unk_token ='[UNK]' ))
+        tokenizer = Tokenizer(WordLevel(unk_token ='[UNK]'))
         tokenizer.pre_tokenizer = Whitespace()
-        trainer = WordLevelTrainer(special_tokens("[UnK]", "[PAD]", "[SOS]", "[EOS]", min_frequency = 2))
+        trainer = WordLevelTrainer(special_tokens=["[UNK]", "[PAD]", "[SOS]", "[EOS]"], min_frequency = 2)
         tokenizer.train_from_iterator(get_all_sentences(ds, lang), trainer = trainer)
         tokenizer.save(str(tokenizer_path))
     else:
@@ -40,7 +40,7 @@ def get_or_build_tokenizer(config, ds, lang):
     return tokenizer
 
 def get_ds(config):
-    ds_raw= load_dataset('opus_books', f'{config["lang_src"]} - {config["lang_tgt"]}' , split = 'train')
+    ds_raw= load_dataset('opus_books', f'{config["lang_src"]}-{config["lang_tgt"]}' , split = 'train')
     
     #Build Tokenizers
 
@@ -49,12 +49,12 @@ def get_ds(config):
 
     #Keep 90% or training, 10% for validation
     train_ds_size =int(0.9*len(ds_raw))
-    val_ds_size = len(ds_size) - len(train_ds_size)
+    val_ds_size = len(ds_raw) - len(train_ds_size)
 
     train_ds_raw, val_ds_raw = random_split(ds_raw, [train_ds_size, val_ds_size])
 
-    train_ds = Bilingualdataset(train_ds_raw, tokenizer_src, tokenizer_tgt, config['lang_src'], config['lang_tgt'], config['seq_len'])
-    val_ds = Bilingualdataset(val_ds_raw, tokenizer_src, tokenizer_tgt, config['lang_src'], config['lang_tgt'], config['seq_len'])
+    train_ds = BilingualDataset(train_ds_raw, tokenizer_src, tokenizer_tgt, config['lang_src'], config['lang_tgt'], config['seq_len'])
+    val_ds = BilingualDataset(val_ds_raw, tokenizer_src, tokenizer_tgt, config['lang_src'], config['lang_tgt'], config['seq_len'])
 
     max_len_src = 0
     max_len_tgt = 0
@@ -74,7 +74,7 @@ def get_ds(config):
     
     return train_dataloader, val_dataloader, tokenizer_src, tokenizer_tgt
 
-def get_model(config, vocab_src,len, vocab_tgt_len):
+def get_model(config, vocab_src_len, vocab_tgt_len):
     model = build_transformer(vocab_src_len, vocab_tgt_len, config['seq_len'], config['seq_len'], config['d_model'])
     return model
 

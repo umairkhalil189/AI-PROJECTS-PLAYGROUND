@@ -32,7 +32,7 @@ class BilingualDataset(Dataset):
         enc_num_padding_tokens = self.seq_len - len(enc_input_tokens) - 2
         dec_num_padding_tokens = self.seq_len - len(dec_input_tokens) - 1
 
-        if enc_num_padding_token <0 or dec_input_len_token <0:
+        if enc_num_padding_tokens <0 or dec_num_padding_tokens <0:
             raise ValueError("sentence is too Long.")
         
         #Add SOS & EOS to the Source Text ! SOS= Start of sentence, EOS = End of sentence
@@ -71,10 +71,10 @@ class BilingualDataset(Dataset):
             "encoder_mask": (encoder_input != self.pad_token).unsqueeze(0).int(),     #(1, 1, Seq_len)
             "decode_mask": (decoder_input != self.pad_token).unsqueeze(0).int() & causal_mask(decoder_input.size(0)),    #(1, seq_len) & (1, seq_len, seq_len)        )
             "label": label, #(Seq_Len),
-            "src_text" : src_test,
+            "src_text" : src_text,
             "tgt_text" : tgt_text
         }
-    def causal_mask():
+def causal_mask(size):
         mask= torch.triu(torch.ones(1,size, size), diagonal =1).type(torch.int)
         return mask == 0 
     
