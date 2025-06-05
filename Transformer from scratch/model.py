@@ -1,4 +1,3 @@
-from matplotlib.transforms import Transform
 import torch
 import torch.nn as nn
 import math
@@ -26,7 +25,7 @@ class PositionalEncoding(nn.Module):
 
       #Create a matrix of shape (seqlen, 1)
 
-      position = torch.zerostorch.arange(0, seq_len, dtype= torch.float).unsqueeze(1) 
+      position = torch.arange(0, seq_len, dtype= torch.float).unsqueeze(1) 
 
       div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0)/ d_model))
 
@@ -39,7 +38,7 @@ class PositionalEncoding(nn.Module):
 
       self.register_buffer('pe', pe)
    def forward(self, x):
-        x= x + (self.pe[:, :,x.shape[1],:]).requires_grad_(False)
+        x= x + (self.pe[:, :x.shape[1],:]).requires_grad_(False)
         return self.dropout(x)
 
 
@@ -53,7 +52,7 @@ class LayerNormalization(nn.Module):
 
    def forward(self, x):
       mean = x.mean(dim= -1, keepdim= True)
-      std = std.mean(dim= -1, keepdim=True)
+      std = x.std(dim= -1, keepdim=True)
       return self.alpha* (x- mean) /(std - self.eps) + self.bias
 
 class FeedForwardBlock(nn.Module):
@@ -61,7 +60,7 @@ class FeedForwardBlock(nn.Module):
       super().__init__()
       self.linear_1=  nn.Linear(d_model, d_ff)      #W1 and B1
       self.dropout = nn.Dropout(dropout)
-      self.Linear_2 = nn.Linear(d_ff, d_model)  #W2 and B2
+      self.linear_2 = nn.Linear(d_ff, d_model)  #W2 and B2
    def forward (self, x):
       #Batch, Seq_len, d_model --> Batch, Seq Len, d_ff
       return self.linear_2(self.dropout(torch.relu(self.linear_1(x))))
@@ -78,7 +77,7 @@ class MultiHeadAttentionBlock(nn.Module):
       self.w_k = nn.Linear(d_model, d_model)    #wk
       self.w_v = nn.Linear(d_model, d_model)    #wv
 
-      self.w_o - nn.Linear(d_model, d_model)    #wo
+      self.w_o = nn.Linear(d_model, d_model)    #wo
       self.dropout= nn.Dropout(dropout)
   
    @staticmethod
@@ -110,7 +109,7 @@ class MultiHeadAttentionBlock(nn.Module):
       x, self.attention_scores = MultiHeadAttentionBlock.attention(query, key, value, mask, self.dropout)  
 
       #Batch, h, seq len, d_k --> Batch, seq len, h, d_k -->  #Batch,  Seq_len, d_model 
-      x = x.transpose(1,2).contagious().view(x.shape[0], -1, self.h * self.d_k)
+      x = x.transpose(1,2).contaguous().view(x.shape[0], -1, self.h * self.d_k)
 
       #Batch,  Seq_len, d_model --> #Batch,  Seq_len, d_model
       return self.w_o(x)
@@ -127,7 +126,7 @@ class ResidualConnection(nn.Module):
 class EncoderBlock(nn.Module):
    def __init__(self, self_attention_block: MultiHeadAttentionBlock, feed_forward_block: FeedForwardBlock , dropout: float) -> None:
       super().__init__()
-      self.self_attention_block= self.self_attention_block
+      self.self_attention_block= self_attention_block
       self.feed_forward_block = feed_forward_block
       self.residual_connections = nn.ModuleList([ResidualConnection(dropout) for _ in range(2)])
       
@@ -156,9 +155,9 @@ class DecoderBlock(nn.Module):
       self.feed_forward_block = feed_forward_block 
       self.residual_connections = nn.ModuleList([ResidualConnection(dropout) for _ in range(3)])
 
-      def forward(self, x, encoder_output, src_mask, tgt_mask):
-         x= self.residual_connections[0](x, lambda x: self_attention_block(x,x,x, tgt_mask))
-         x= self.residual_connections[1](x, lambda x: self_attention_block(x, encoder_output, encoder_output, src_mask))
+   def forward(self, x, encoder_output, src_mask, tgt_mask):
+         x= self.residual_connections[0](x, lambda x: self.self_attention_block(x,x,x, tgt_mask))
+         x= self.residual_connections[1](x, lambda x: self.self_attention_block(x, encoder_output, encoder_output, src_mask))
          x= self.residual_connections[2](x, self.feed_forward_block)
          return x
       
@@ -166,7 +165,7 @@ class Decoder(nn.Module):
    def __init__(self, layers: nn.ModuleList) -> None:
       super().__init__()
       self.layers= layers
-      self.norm = LayerNormalization
+      self.norm = LayerNormalization()
 
    def forward(self, x, encoder_output, src_mask, tgt_mask):
       for layer in self.layers:
@@ -174,11 +173,11 @@ class Decoder(nn.Module):
       return self.norm(x)
 
 class ProjectionLayer(nn.Module):
-    def __init__(self, d_model:int, vocab_size: int) -> None:
+   def __init__(self, d_model:int, vocab_size: int) -> None:
        super().__init__()
        self.proj= nn.Linear(d_model, vocab_size)
 
-       def forward(self,x):
+   def forward(self,x):
           #Batch, Seq_Len, d_model --> Bathc, Seq_Len, Vocab_Size
           return torch.log_softmax(self.proj(x), dim = -1)
        

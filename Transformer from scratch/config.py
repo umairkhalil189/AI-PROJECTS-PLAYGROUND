@@ -13,6 +13,8 @@ def get_config():
         "model_filename" : "tmodel_",
         "preload": None,
         "tokenizer_file": "tokenizer_{0}.json",
+        #"tokenizer.file": "./models/tokenizer_{}.json",
+
         "experiment_name" : "runs/tmodel"
     }
 
