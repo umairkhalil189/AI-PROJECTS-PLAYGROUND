@@ -95,7 +95,7 @@ def train_model(config):
 
     initial_epoch = 0
     global_step = 0
-    if configp['preload']:
+    if config['preload']:
         model_filename = get_weights_file_path(config, config['preload'])
         print(f'Preoading model {model_filename}')
         state = torch.load(model_filename)
