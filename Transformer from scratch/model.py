@@ -109,7 +109,7 @@ class MultiHeadAttentionBlock(nn.Module):
       x, self.attention_scores = MultiHeadAttentionBlock.attention(query, key, value, mask, self.dropout)  
 
       #Batch, h, seq len, d_k --> Batch, seq len, h, d_k -->  #Batch,  Seq_len, d_model 
-      x = x.transpose(1,2).contaguous().view(x.shape[0], -1, self.h * self.d_k)
+      x = x.transpose(1,2).contiguous().view(x.shape[0], -1, self.h * self.d_k)
 
       #Batch,  Seq_len, d_model --> #Batch,  Seq_len, d_model
       return self.w_o(x)
@@ -132,7 +132,7 @@ class EncoderBlock(nn.Module):
       
    def forward(self, x, src_mask):
       x= self.residual_connections[0](x, lambda x: self.self_attention_block(x, x, x, src_mask))
-      x= self.residual_connections[1](x, lambda x: self.feed_forward_block)
+      x= self.residual_connections[1](x, self.feed_forward_block)
       return x
 
 
