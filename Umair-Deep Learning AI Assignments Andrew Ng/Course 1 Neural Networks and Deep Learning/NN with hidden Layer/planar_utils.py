@@ -31,6 +31,7 @@ def sigmoid(x):
     Return:
     s -- sigmoid(x)
     """
+    #eps = 1e-15
     s = 1/(1+np.exp(-x))
     return s
 
