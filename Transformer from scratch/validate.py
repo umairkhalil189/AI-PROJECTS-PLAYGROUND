@@ -21,6 +21,9 @@ from tqdm import tqdm
 
 from pathlib import Path
 
+def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt, max_len, device):
+    sos_idx = tokenizer_tgt
+
 
 def run_validation(moidel, validation_ds, tokenizer_src, tokenizer_tgt, max_len, device , print_msg, global_state, writer, run_examples):
     model.eval()
@@ -36,3 +39,8 @@ def run_validation(moidel, validation_ds, tokenizer_src, tokenizer_tgt, max_len,
 
     with torch.no_grad():
         for batch in validation_ds:
+            count +=1
+            encoder_input = batch['encoder_input'].to(device)
+            encoder_mask = batch['encoder_mask'].to(device)
+
+            assert batch.size(0) == 1, "Batch Size must be 1 for validation"
